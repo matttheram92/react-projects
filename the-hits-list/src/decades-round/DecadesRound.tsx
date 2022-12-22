@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import DecadesQuestion from "./DecadesQuestion";
 import { DecadesQuestionInfo } from "./DecadesRoundInfo";
-import { MOCK_DECADES_ROUND } from "./MockDecadesRound";
 
 function DecadesRound() {
+  const randomPageNo = Math.floor(Math.random() * 200);
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [items, setItems] = useState([]);
@@ -13,7 +13,7 @@ function DecadesRound() {
 
   useEffect(() => {
     fetch(
-      "http://ws.audioscrobbler.com/2.0/?method=tag.gettoptracks&tag=00s&page=1&format=json&limit=1&api_key=f2dc537249c67b7a5a0b7597760ee60e"
+      `http://ws.audioscrobbler.com/2.0/?method=tag.gettoptracks&tag=00s&page=${randomPageNo}&format=json&limit=1&api_key=f2dc537249c67b7a5a0b7597760ee60e`
     )
       .then((res) => res.json())
       .then(
@@ -31,7 +31,9 @@ function DecadesRound() {
   return (
     <>
       <h1 className="text-3xl font-bold underline">Decades Round</h1>
-      <DecadesQuestion questions={items} onEdit={handleEdit} />
+      {items.length > 0 && (
+        <DecadesQuestion questions={items} onEdit={handleEdit} />
+      )}
     </>
   );
 }
