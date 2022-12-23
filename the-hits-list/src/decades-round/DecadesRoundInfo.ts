@@ -52,3 +52,9 @@ export enum Decades {
   "00s" = "00s",
   "10s" = "10s",
 }
+
+export enum QuestionStatus {
+  Unaswered = "Unaswered",
+  Correct = "Correct",
+  Incorrect = "Incorrect",
+}

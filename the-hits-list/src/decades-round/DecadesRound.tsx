@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { DecadesProgress } from "./DecadesProgress";
 import DecadesQuestion from "./DecadesQuestion";
 import { DecadesQuestionInfo } from "./DecadesRoundInfo";
+import { DecadesScoreboard } from "./DecadesScoreboard";
 
-function DecadesRound() {
+export function DecadesRound() {
   const randomPageNo = Math.floor(Math.random() * 200);
   const [error, setError] = useState(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -30,12 +32,19 @@ function DecadesRound() {
 
   return (
     <>
-      <h1 className="text-3xl font-bold underline">Decades Round</h1>
+      <h2 className="text-2xl font-bold text-center">Decades Round</h2>
+      <div className="text-pink-500 text-cyan-500 text-orange-200"></div>
+      <div className="flex my-7 rounded-lg scorecard-container">
+        <DecadesScoreboard color="pink-500" />
+        <DecadesScoreboard color="cyan-500" />
+        <DecadesScoreboard color="orange-200" />
+      </div>
+      <div className="flex">
+        <DecadesProgress />
+      </div>
       {items.length > 0 && (
         <DecadesQuestion questions={items} onEdit={handleEdit} />
       )}
     </>
   );
 }
-
-export default DecadesRound;

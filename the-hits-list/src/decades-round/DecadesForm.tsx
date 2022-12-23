@@ -74,36 +74,50 @@ class DecadesForm extends React.Component<{}, { [key: string]: string }> {
 
   render() {
     return (
-      <div>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Title:
+      <div className="max-w-xs m-auto">
+        <form onSubmit={this.handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Title
             <input
               type="text"
               name="title"
-              className="outline"
+              placeholder="Title"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               value={this.state.title}
               onChange={this.handleChange}
             />
           </label>
 
-          <label>
-            Artist:
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Artist
             <input
               type="text"
               name="artist"
-              className="outline"
+              placeholder="Artist"
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               value={this.state.artist}
               onChange={this.handleChange}
             />
           </label>
           <input type="submit" value="Submit" />
         </form>
-        <p>{this.searchedTracks}</p>
-        <p>{this.searchedArtists}</p>
+        <AutocompleteSelect list={this.searchedTracks}></AutocompleteSelect>
+        <AutocompleteSelect list={this.searchedArtists}></AutocompleteSelect>
       </div>
     );
   }
 }
 
 export default DecadesForm;
+
+function AutocompleteSelect(props: { list: string[] }) {
+  return (
+    <ul className="row list-none">
+      {props.list.map((item) => (
+        <li>
+          <a>{item}</a>
+        </li>
+      ))}
+    </ul>
+  );
+}

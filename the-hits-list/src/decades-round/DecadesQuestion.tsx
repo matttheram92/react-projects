@@ -36,10 +36,17 @@ function DecadesQuestion(props: DecadesQuestionProps) {
       );
   }, []);
 
+  const playOnClick = (): void => {
+    const audio = document.getElementById("audio") as HTMLAudioElement;
+    if (audio) {
+      audio.play();
+    }
+  };
+
   return (
     <ul className="row">
+      <button onClick={playOnClick}>Play</button>
       <AudioSection isLoaded={isLoaded} track={track} />
-      <DecadesForm />
       {questions.map((question) => (
         <div key={question.mbid}>
           <li>{track.name}</li>
@@ -54,6 +61,7 @@ function DecadesQuestion(props: DecadesQuestionProps) {
           </button>
         </div>
       ))}
+      <DecadesForm />
     </ul>
   );
 }
@@ -61,9 +69,13 @@ function DecadesQuestion(props: DecadesQuestionProps) {
 export default DecadesQuestion;
 
 function AudioSection(props: { isLoaded: boolean; track: any }) {
+  const setPauseTimer = () => {
+    const audio = document.getElementById("audio") as HTMLAudioElement;
+    setTimeout(() => audio.pause(), 10000);
+  };
   if (props.isLoaded) {
     return (
-      <audio controls className="audio">
+      <audio id="audio" controls className="audio" onPlaying={setPauseTimer}>
         <source src={props.track.previewURL} type="audio/mpeg"></source>
       </audio>
     );
