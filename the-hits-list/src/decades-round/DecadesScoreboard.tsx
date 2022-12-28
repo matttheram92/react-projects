@@ -1,22 +1,54 @@
 import React from "react";
-import { FiPlay } from "react-icons/fi";
+import { BsPlay, BsPlayFill } from "react-icons/bs";
 
-export function DecadesScoreboard(props: { color: string }) {
+export function DecadesScoreboard(props: {
+  color: string;
+  correctAnswers: boolean[];
+}) {
   return (
     <div className="flex m-auto">
       <div className="mt-36">
-        <FiPlay className={`text-9xl text-${props.color}`} />
-        <FiPlay className={`-mt-14 rotate-180 text-9xl text-${props.color}`} />
-        <FiPlay className={`-mt-14 text-9xl text-${props.color}`} />
-        <FiPlay className={`-mt-14 rotate-180 text-9xl text-${props.color}`} />
-        <FiPlay className={`-mt-14 text-9xl text-${props.color}`} />
+        <BsPlay className={`-mt-20 text-9xl text-${props.color}`} />
+        {props.correctAnswers.length >= 5 ? (
+          <BsPlayFill className={`-mt-32 text-9xl text-${props.color}`} />
+        ) : (
+          ""
+        )}
+        <BsPlay className={`-mt-20 rotate-180 text-9xl text-${props.color}`} />
+        {props.correctAnswers.length >= 4 ? (
+          <BsPlayFill
+            className={`-mt-32 rotate-180 text-9xl text-${props.color}`}
+          />
+        ) : (
+          ""
+        )}
+        <BsPlay className={`-mt-20 text-9xl text-${props.color}`} />
+        {props.correctAnswers.length >= 3 ? (
+          <BsPlayFill className={`-mt-32 text-9xl text-${props.color}`} />
+        ) : (
+          ""
+        )}
+        <BsPlay className={`-mt-20 rotate-180 text-9xl text-${props.color}`} />
+        {props.correctAnswers.length >= 2 ? (
+          <BsPlayFill
+            className={`-mt-32 rotate-180 text-9xl text-${props.color}`}
+          />
+        ) : (
+          ""
+        )}
+        <BsPlay className={`-mt-20 text-9xl text-${props.color}`} />
+        {props.correctAnswers.length >= 1 ? (
+          <BsPlayFill className={`-mt-32 text-9xl text-${props.color}`} />
+        ) : (
+          ""
+        )}
       </div>
-      <div className="-ml-8">
-        <FiPlay className={`rotate-180 text-9xl text-${props.color}`} />
-        <FiPlay className={`-mt-14 text-9xl text-${props.color}`} />
-        <FiPlay className={`-mt-14 rotate-180 text-9xl text-${props.color}`} />
-        <FiPlay className={`-mt-14 text-9xl text-${props.color}`} />
-        <FiPlay className={`-mt-14 rotate-180 text-9xl text-${props.color}`} />
+      <div className="-ml-14">
+        <BsPlay className={`rotate-180 text-9xl text-${props.color}`} />
+        <BsPlay className={`-mt-20 text-9xl text-${props.color}`} />
+        <BsPlay className={`-mt-20 rotate-180 text-9xl text-${props.color}`} />
+        <BsPlay className={`-mt-20 text-9xl text-${props.color}`} />
+        <BsPlay className={`-mt-20 rotate-180 text-9xl text-${props.color}`} />
       </div>
     </div>
   );

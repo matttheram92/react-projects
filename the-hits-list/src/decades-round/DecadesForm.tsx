@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React from "react";
+import { DecadesGuess } from "./DecadesRoundInfo";
 
-interface DecadesGuess {
-  title: string;
-  artist: string;
+interface DecadesFormProps {
+  onSubmit: (guess: DecadesGuess) => void;
 }
 
-class DecadesForm extends React.Component<{}, { [key: string]: string }> {
+class DecadesForm extends React.Component<
+  DecadesFormProps,
+  { [key: string]: string }
+> {
   searchedTracks: string[];
   searchedArtists: string[];
-  constructor(props: {}) {
+  constructor(props: DecadesFormProps) {
     super(props);
     this.state = { title: "", artist: "" };
     this.searchedTracks = [];
@@ -70,12 +73,16 @@ class DecadesForm extends React.Component<{}, { [key: string]: string }> {
   handleSubmit(event: any) {
     alert("A name was submitted: " + JSON.stringify(this.state));
     event.preventDefault();
+    this.props.onSubmit({ artist: this.state.artist, title: this.state.title });
   }
 
   render() {
     return (
       <div className="max-w-xs m-auto">
-        <form onSubmit={this.handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+        <form
+          onSubmit={this.handleSubmit}
+          className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+        >
           <label className="block text-gray-700 text-sm font-bold mb-2">
             Title
             <input
@@ -99,7 +106,11 @@ class DecadesForm extends React.Component<{}, { [key: string]: string }> {
               onChange={this.handleChange}
             />
           </label>
-          <input type="submit" value="Submit" />
+          <input
+            type="submit"
+            value="Submit"
+            className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          />
         </form>
         <AutocompleteSelect list={this.searchedTracks}></AutocompleteSelect>
         <AutocompleteSelect list={this.searchedArtists}></AutocompleteSelect>
@@ -114,7 +125,7 @@ function AutocompleteSelect(props: { list: string[] }) {
   return (
     <ul className="row list-none">
       {props.list.map((item) => (
-        <li>
+        <li key={item}>
           <a>{item}</a>
         </li>
       ))}

@@ -1,15 +1,20 @@
-import { BsHexagon, BsHexagonFill } from "react-icons/bs";
 import { DecadesProgressHex } from "./DecadesProgressHex";
-import { QuestionStatus } from "./DecadesRoundInfo";
+import { Decades, QuestionStatus } from "./DecadesRoundInfo";
 
-export function DecadesProgress() {
+export function DecadesProgress(props: {
+  progress: { decade: Decades; status: QuestionStatus }[];
+}) {
   return (
     <div className="flex m-auto">
-      <DecadesProgressHex text="10s" status={QuestionStatus.Unaswered} />
-      <DecadesProgressHex text="00s" status={QuestionStatus.Unaswered} />
-      <DecadesProgressHex text="90s" status={QuestionStatus.Unaswered} />
-      <DecadesProgressHex text="80s" status={QuestionStatus.Unaswered} />
-      <DecadesProgressHex text="70s" status={QuestionStatus.Unaswered} />
+      {props.progress.map((x) => {
+        return (
+          <DecadesProgressHex
+            key={x.decade}
+            text={x.decade}
+            status={x.status}
+          />
+        );
+      })}
     </div>
   );
 }

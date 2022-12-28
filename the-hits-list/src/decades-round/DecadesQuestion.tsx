@@ -1,30 +1,36 @@
 import { useEffect, useState } from "react";
 import DecadesForm from "./DecadesForm";
-import { DecadesQuestionInfo } from "./DecadesRoundInfo";
+import {
+  DecadesGuess,
+  DecadesQuestionInfo,
+  QuestionStatus,
+} from "./DecadesRoundInfo";
+import logo from "./icons8-audio-wave.gif";
 
 interface DecadesQuestionProps {
-  questions: DecadesQuestionInfo[];
-  onEdit: (question: DecadesQuestionInfo) => void;
+  question: DecadesQuestionInfo;
+  toNextQuestion: (question: DecadesQuestionInfo) => void;
+  answerQuestion: (status: QuestionStatus) => void;
 }
 
 function DecadesQuestion(props: DecadesQuestionProps) {
-  const { questions, onEdit } = props;
-  const handleEditClick = (questionBeingEdited: DecadesQuestionInfo) => {
-    onEdit(questionBeingEdited);
-  };
+  const { question, toNextQuestion, answerQuestion } = props;
   const [isLoaded, setIsLoaded] = useState(false);
   const [track, setTrack] = useState({
     previewURL: "",
     name: "",
     artistName: "",
   });
+  const [playing, setPlaying] = useState(false);
+  let [countdown, setCountdown] = useState(10);
+  let [questionStatus, setStatus] = useState(QuestionStatus.Unanswered);
 
   useEffect(() => {
-    if (questions.length === 0) {
+    if (!question) {
       return;
     }
     fetch(
-      `https://api.napster.com/v2.2/search?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&query=${questions[0].name} ${questions[0].artist.name}&per_type_limit=1&type=track`
+      `https://api.napster.com/v2.2/search?apikey=YTkxZTRhNzAtODdlNy00ZjMzLTg0MWItOTc0NmZmNjU4Yzk4&query=${question.name} ${question.artist.name}&per_type_limit=1&type=track`
     )
       .then((res) => res.json())
       .then(
@@ -39,30 +45,82 @@ function DecadesQuestion(props: DecadesQuestionProps) {
   const playOnClick = (): void => {
     const audio = document.getElementById("audio") as HTMLAudioElement;
     if (audio) {
+      setPlaying(true);
+      //adjustCountdown();
       audio.play();
     }
   };
 
+  const nextQuestion = (): void => {
+    toNextQuestion(question);
+  };
+
+  const adjustCountdown = (): void => {
+    if (countdown === 0) {
+      return;
+    }
+
+    setTimeout(() => {
+      setCountdown(countdown - 1);
+      countdown--;
+      adjustCountdown();
+    }, 1000);
+  };
+
+  const formSubmitted = (guess: DecadesGuess): void => {
+    if (
+      guess.artist.toLowerCase() === question.artist.name.toLowerCase() &&
+      guess.title.toLowerCase() === question.name.toLowerCase()
+    ) {
+      questionStatus = QuestionStatus.Correct;
+    } else {
+      questionStatus = QuestionStatus.Incorrect;
+    }
+    setStatus(questionStatus);
+    answerQuestion(questionStatus);
+  };
+
   return (
-    <ul className="row">
-      <button onClick={playOnClick}>Play</button>
+    <div className="grid">
+      {!playing ? (
+        <button
+          onClick={playOnClick}
+          className="shadow w-52 mx-auto my-3 border-white border-4 bg-purple-600 hover:bg-purple-400 text-4xl focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded-full"
+        >
+          Play
+        </button>
+      ) : (
+        <button className="shadow h-16 w-52 mx-auto my-3 border-white border-4 bg-purple-600 text-4xl focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded-full">
+          {/* {countdown} */}
+          <img className="m-auto h-10" src={logo} alt="loading..." />
+        </button>
+      )}
+
+      {questionStatus === "Incorrect" || questionStatus === "Correct" ? (
+        <button
+          onClick={nextQuestion}
+          className="shadow w-52 mx-auto my-3 border-white border-4 bg-purple-600 hover:bg-purple-400 text-4xl focus:shadow-outline focus:outline-none text-white font-bold py-2 px-4 rounded-full"
+        >
+          Next
+        </button>
+      ) : (
+        ""
+      )}
       <AudioSection isLoaded={isLoaded} track={track} />
-      {questions.map((question) => (
-        <div key={question.mbid}>
-          <li>{track.name}</li>
-          <li>{track.artistName}</li>
-          <button
-            className="font-bold underline"
-            onClick={() => {
-              handleEditClick(question);
-            }}
-          >
-            <span className="icon-edit "></span>Edit
-          </button>
-        </div>
-      ))}
-      <DecadesForm />
-    </ul>
+
+      {questionStatus === "Incorrect" || questionStatus === "Correct" ? (
+        <ul key={question.mbid} className="row m-auto text-center">
+          <li>{questionStatus}</li>
+
+          <li>{question.name}</li>
+          <li>{question.artist.name}</li>
+        </ul>
+      ) : (
+        ""
+      )}
+
+      <DecadesForm onSubmit={formSubmitted} />
+    </div>
   );
 }
 
@@ -75,7 +133,12 @@ function AudioSection(props: { isLoaded: boolean; track: any }) {
   };
   if (props.isLoaded) {
     return (
-      <audio id="audio" controls className="audio" onPlaying={setPauseTimer}>
+      <audio
+        id="audio"
+        controls
+        className="audio hidden"
+        onPlaying={setPauseTimer}
+      >
         <source src={props.track.previewURL} type="audio/mpeg"></source>
       </audio>
     );
